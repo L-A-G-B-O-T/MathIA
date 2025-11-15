@@ -1,0 +1,22 @@
+from keras.datasets import mnist
+
+import pickle
+
+# Load the dataset
+train, test = mnist.load_data()
+
+train_x, train_y = train
+
+All7s_x = []
+for i in range(len(train_x)):
+    if train_y[i] == 7:
+        All7s_x.append(train_x[i])
+
+with open("MNIST/All7s.pkl", "wb") as infile:
+    pickle.dump(All7s_x, infile)
+
+with open("MNIST/All7s.pkl", "rb") as outfile:
+    All7s_x_loaded = pickle.load(outfile)
+
+print(All7s_x_loaded[0])
+
