@@ -4,6 +4,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Flatten
 from keras.losses import SparseCategoricalCrossentropy
 from matplotlib import pyplot as plt
+from custom_models import Regular
 import pickle
 
 with open("MNIST/All.pkl", "rb") as outfile:
@@ -14,7 +15,7 @@ print("Frequencies: ")
 
 train_images = train_images / 255 #normalize color values to floats between 0 and 1
 
-model = Sequential([
+model = Regular([
     Flatten(input_shape=(28,28)),
     Dense(128, activation="relu"),
     Dense(10),

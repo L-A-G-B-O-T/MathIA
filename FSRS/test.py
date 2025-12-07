@@ -1,31 +1,33 @@
 from fsrs import Scheduler, Card, Rating, ReviewLog
+import numpy as np
 
 scheduler = Scheduler()
 
 # NOTE: all new cards are due immediately upon creation
-card = Card()
+cards = np.array([Card() for i in range(5)])
+review_logs = np.array([None]*5)
 
 # Rating.Again (==1) forgot the card
 # Rating.Hard (==2) remembered the card with serious difficulty
 # Rating.Good (==3) remembered the card after a hesitation
 # Rating.Easy (==4) remembered the card easily
 
-rating = Rating.Again
+rating = np.ones(5)
 
-card, review_log = scheduler.review_card(card, rating)
+cards[1], review_logs[1] = scheduler.review_card(cards[1], Rating.Good)
 
-print(f"Card rated {review_log.rating} at {review_log.review_datetime}")
+def review_datetime(rl):
+    return rl.review_datetime
+
+print(review_datetime(review_logs[1]))
 # > Card rated 3 at 2024-11-30 17:46:58.856497+00:00
 
-from datetime import datetime, timezone
-
-due = card.due
+due = lambda card : card.due
 
 # how much time between when the card is due and now
-time_delta = due - datetime.now(timezone.utc)
+time_delta = due(cards[1]) - review_datetime(review_logs[1])
 
-print(f"Card due on {due}")
-print(f"Card due in {time_delta.seconds} seconds")
+print(f"Card due in {time_delta} seconds")
 
 # > Card due on 2024-11-30 18:42:36.070712+00:00
 # > Card due in 599 seconds
