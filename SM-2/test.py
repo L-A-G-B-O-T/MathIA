@@ -1,13 +1,29 @@
-from supermemo2 import first_review, review
+from anki_sm_2 import Scheduler, Card, Rating
 
-# first review
-# using quality=4 as an example, read below for what each value from 0 to 5 represents
-# review date would default to datetime.utcnow() (UTC timezone) if not provided
-first_review = first_review(4, "2024-06-22")
-# first_review prints { "easiness": 2.36, "interval": 1, "repetitions": 1, "review_datetime": "2024-06-23 01:06:02"))
+scheduler = Scheduler()
 
-# second review
-second_review = review(4, first_review["easiness"], first_review["interval"], first_review["repetitions"], first_review["review_datetime"])
-# or just unpack the first review dictionary
-second_review = review(4, **first_review)
-# second_review prints similar to example above.
+card = Card()
+
+# Rating.Again (==1) forgot the card
+# Rating.Hard (==2) remembered the card with serious difficulty
+# Rating.Good (==3) remembered the card after a hesitation
+# Rating.Easy (==4) remembered the card easily
+
+rating = Rating.Good
+
+card, review_log = scheduler.review_card(card, rating)
+
+print(f"Card rated {review_log.rating} at {review_log.review_datetime}")
+# > Card rated 3 at 2024-10-31 01:36:57.080934+00:00
+
+from datetime import datetime, timezone
+
+due = card.due
+
+# how much time between when the card is due and now
+time_delta = due - datetime.now(timezone.utc)
+
+print(f"Card due: at {due}")
+print(f"Card due in {time_delta.seconds / 60} minutes")
+# > Card due: at 2024-10-31 01:46:57.080934+00:00
+# > Card due in 9.983333333333333 minutes
