@@ -1,11 +1,18 @@
-from keras.datasets import mnist
-
 import pickle
 
 # Load the dataset
-train, test = mnist.load_data()
+with open("MNIST/All.pkl", "rb") as infile:
+    train_images, train_labels = pickle.load(infile)
 
-train_x, train_y = train
+filtered_train_images = []
+for i in range(len(train_images)):
+    if train_labels[i] == 0:
+        filtered_train_images.append(train_images[i])
 
-print(type(train_x))
+with open("MNIST/All0s.pkl", "wb") as outfile:
+    pickle.dump(filtered_train_images, outfile)
 
+with open("MNIST/All0s.pkl", "rb") as infile:
+    loaded_train_images = pickle.load(infile)
+
+print(loaded_train_images[0])
