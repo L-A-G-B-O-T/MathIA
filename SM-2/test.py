@@ -1,29 +1,36 @@
-from anki_sm_2 import Scheduler, Card, Rating
+from anki_sm_2 import Scheduler, Card, Rating, ReviewLog
+from datetime import datetime, timezone
 
 scheduler = Scheduler()
 
-card = Card()
+cards = [Card() for _ in range(9)]
 
-# Rating.Again (==1) forgot the card
-# Rating.Hard (==2) remembered the card with serious difficulty
-# Rating.Good (==3) remembered the card after a hesitation
-# Rating.Easy (==4) remembered the card easily
+# Rating.Fail (==0) forgot the card
+# Rating.Pass (==1) remembered the card
 
-rating = Rating.Good
+review_logs : list[ReviewLog] = [None]*9 # pyright: ignore[reportAssignmentType]
 
-card, review_log = scheduler.review_card(card, rating)
+print("Review 1")
+ratings : list[Rating] = [Rating.Again] * 5 + [Rating.Good] * 5
+for i in range(9):
+    cards[i], review_logs[i] = scheduler.review_card(cards[i], ratings[i])
 
-print(f"Card rated {review_log.rating} at {review_log.review_datetime}")
-# > Card rated 3 at 2024-10-31 01:36:57.080934+00:00
-
-from datetime import datetime, timezone
-
-due = card.due
+due_dates : list[datetime] = [card.due for card in cards] # pyright: ignore[reportAssignmentType]
 
 # how much time between when the card is due and now
-time_delta = due - datetime.now(timezone.utc)
+time_delta = [(due - datetime.now(timezone.utc)).total_seconds() for due in due_dates]  # pyright: ignore[reportOptionalOperand]
 
-print(f"Card due: at {due}")
-print(f"Card due in {time_delta.seconds / 60} minutes")
-# > Card due: at 2024-10-31 01:46:57.080934+00:00
-# > Card due in 9.983333333333333 minutes
+print(time_delta)
+
+print("Review 2")
+
+ratings : list[Rating] = [Rating.Again] * 3 + [Rating.Good] * 7
+for i in range(9):
+    cards[i], review_logs[i] = scheduler.review_card(cards[i], ratings[i])
+
+due_dates : list[datetime] = [card.due for card in cards] # pyright: ignore[reportAssignmentType]
+
+# how much time between when the card is due and now
+time_delta = [(due - datetime.now(timezone.utc)).total_seconds() for due in due_dates]  # pyright: ignore[reportOptionalOperand]
+
+print(time_delta)
