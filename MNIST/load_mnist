@@ -1,18 +1,18 @@
 import pickle
 
 # Load the dataset
-with open("MNIST/All.pkl", "rb") as infile:
+with open("MNIST/Test.pkl", "rb") as infile:
     train_images, train_labels = pickle.load(infile)
 
 filtered_train_images = []
 for i in range(len(train_images)):
-    if train_labels[i] == 0:
+    if train_labels[i] == 9:
         filtered_train_images.append(train_images[i])
 
-with open("MNIST/All0s.pkl", "wb") as outfile:
+with open("MNIST/Test9s.pkl", "wb") as outfile:
     pickle.dump(filtered_train_images, outfile)
 
-with open("MNIST/All0s.pkl", "rb") as infile:
+with open("MNIST/Test9s.pkl", "rb") as infile:
     loaded_train_images = pickle.load(infile)
 
 print(loaded_train_images[0])
